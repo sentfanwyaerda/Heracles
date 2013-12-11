@@ -109,6 +109,13 @@ class Heracles {
 		return ($start_session === TRUE && $add === TRUE ? array('session'=>$session,'expires'=>$expires,'created'=>$now) : $str);
 	}
 	function authenticate_by_session($username, $key, $expires=0, $method=NULL, $created=FALSE){ //dummy
+		if(is_array($key) && isset($key['key']) && isset($key['method']) && (isset($key['created']) || isset($key[$expires]))){
+			foreach(array('created','expires','method','key') as $label){ //do key as last because it will destroy the array
+				if(isset($key[$label])){ $$label = $key[$label]; }
+			}
+		}
+		/*fix*/ if(is_array($key)){ return FALSE; }
+
 		/*fix*/ if(!isset($this->settings['validation_length'])){ $this->settings['validation_length'] = 86400;}
 	/*debug*/ if(self::_auth_debug()){ $this->_debug[] = __FUNCTION__.'() := '.implode(" , ", array($username, $key, $expires, $method, $created)); }
 		if(in_array($key, $this->settings['keys'])){
