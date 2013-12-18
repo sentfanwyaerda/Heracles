@@ -1,14 +1,17 @@
 <?php
-function authenticate($username, $password, $method=TRUE){
+function /*bool*/ authenticate($username, $password, $method=TRUE){
 	global $heracles;
 	if(!isset($heracles) || !is_object($heracles) ){ $heracles = new Heracles(); }
 	return $heracles->authenticate($username, $password, $method);
 }
-function authenticate_by_session($username, $key, $expires=0, $method=NULL, $created=FALSE){
+function /*bool*/ authenticate_by_session($username, $key, $expires=0, $method=NULL, $created=FALSE){
 	global $heracles;
 	if(!isset($heracles) || !is_object($heracles) ){ $heracles = new Heracles(); }
         return $heracles->authenticate_by_session($username, $key, $expires=0, $method=NULL, $created=FALSE);
 }
+function /*bool*/ try_to_authenticate(/*no arguments!*/){}
+function /*bool*/ is_authenticated($method=TRUE){}
+function /*bool*/ is_granted_to($priviledge, $object=FALSE, $method=TRUE){}
 class Heracles {
 	private $_configfile = NULL;
 	var $settings = array();
