@@ -59,6 +59,8 @@ class Heracles {
 		
 		$record = Heracles::_srfix($record);
 		
+		/*test record if valid commit*/ if(!isset($record['select'])){ return FALSE; }
+		
 		if($mode == 'new'){
 			$db[] = $record;
 		} else {
@@ -92,7 +94,7 @@ class Heracles {
 		$record = Heracles::load_record($username);
 		if($record['pass-hash'] == md5($username.':'.$password) ){
 			session_start();
-			$start = number_format(microtime(TRUE),1);
+			$start = round(microtime(TRUE),1);
 			$_SESSION['start'] = $start;
 			$_SESSION['user'] = $username;
 			$_SESSION['hash'] = md5($username.':'.$start.':'.md5($username.':'.$password));
@@ -102,9 +104,9 @@ class Heracles {
 	}
 	function authenticate_by_session($username, $key, $expires=0, $method=NULL, $created=FALSE){
 		$record = Heracles::load_record($username);
-		$start = ($created != FALSE ? number_format($created,1) : ($expires != 0 ? number_format($expires - Heracles::get_session_length() , 1) : number_format(microtime(TRUE),1) ) );
+		$start = ($created != FALSE ? round($created,1) : ($expires != 0 ? round($expires - Heracles::get_session_length() , 1) : round(microtime(TRUE),1) ) );
 		if($key == md5($username.':'.$start.':'.$record['pass-hash']) ){
-			session_start();
+			@session_start();
 			$_SESSION['start'] = $start;
 			$_SESSION['user'] = $username;
 			$_SESSION['hash'] = $key;
@@ -113,7 +115,7 @@ class Heracles {
 		return FALSE;		
 	}
 	function is_authenticated(){
-		session_start();
+		@session_start();
 		if( !isset($_SESSION['user']) || !isset($_SESSION['hash']) ){ return FALSE; }
 		return ($_SESSION['hash'] == md5($_SESSION['user'].':'.$_SESSION['start'].':'.Heracles::get_passhash($_SESSION['user'])) && TRUE /*$_SESSION['start'] <~ 1 hour (Heracles::get_session_length()) */ );
 	}
@@ -123,7 +125,7 @@ class Heracles {
 		}
 		else{
 			$record = Heracles::load_record($key);
-			return $record['pass-hash'];
+			return (isset($record['pass-hash']) ? $record['pass-hash'] : NULL);
 		}
 	}
 	function get_user_id(){
@@ -163,17 +165,20 @@ class Heracles {
 		return $r;
 	}
 	function _srfix($r){ 
+		//*fix*/ if(!is_array($r) || (!isset($r['username']) && count($r) < 2)){ return $r; }
 		unset($r['select']);
-		$r['pass-hash'] = Heracles::get_passhash($r['username'], (strlen($r['password']) > 1 ? $r['password'] : FALSE), $r['password-confirm']);
+		$r['pass-hash'] = Heracles::get_passhash((isset($r['username']) ? $r['username'] : NULL), (isset($r['password']) && strlen($r['password']) > 1 ? $r['password'] : FALSE), (isset($r['password-confirm']) ? $r['password-confirm'] : NULL));
 		unset($r['password']);
 		unset($r['password-confirm']);
-		$r['role'] = explode(",", $r['role']);
-		$r['group'] = explode(",", $r['group']);
+		$r['role'] = explode(",", (isset($r['role']) ? $r['role'] : NULL));
+		$r['group'] = explode(",", (isset($r['group']) ? $r['group'] : NULL));
 		$r = Heracles::array_order($r, Heracles::first_order());
 		return $r;
 	}
 	function array_match($needle=array(), $haystack=array(), $with_key=TRUE, $operator="AND"){
 		$bool = TRUE;
+		if(!is_array($needle)){ $needle = explode(',', $needle); /*return FALSE;*/ }
+		if(!is_array($haystack)){ $haystack = explode(',', $haystack); }
 		if($with_key == TRUE){
 			foreach($needle as $n=>$v){
 				if($needle[$n] == $haystack[$n]){
@@ -194,9 +199,10 @@ class Heracles {
 		return $bool;
 	}
 	function array_order($ar=array(), $order=array()){
+		/*fix*/ if(!is_array($ar) || !is_array($order)){ return $ar; }
 		ksort($ar);
 		$n = array();
-		foreach($order as $k){ $n[$k] = $ar[$k]; }
+		foreach($order as $k){ if(isset($ar[$k])){$n[$k] = $ar[$k]; } }
 		foreach($ar as $k=>$v){ if(!in_array($k, $order)){ $n[$k] = $ar[$k]; } }
 		return $n;
 	}

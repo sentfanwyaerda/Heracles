@@ -38,7 +38,7 @@ table.user input.bold, table.user input[readonly] { font-weight: bold; }
 <script src="/skin/js/tag-it/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
 <link href="/skin/js/tag-it/css/jquery.tagit.css" rel="stylesheet" type="text/css">
-<script src="/skin/js/ckeditor/ckeditor.js" type="text/javascript" charset="utf-8"></script>
+<!-- <script src="/skin/js/ckeditor/ckeditor.js" type="text/javascript" charset="utf-8"></script> -->
 <script type="text/javascript">
     $.datepicker.setDefaults($.datepicker.regional['nl']);
     $(function () {
@@ -48,6 +48,8 @@ table.user input.bold, table.user input[readonly] { font-weight: bold; }
             dateFormat: 'dd-mm-yy'
         });
     });
+</script>
+<script type="text/javascript">
 	roleTags = ['webmaster','ledenadministratie','contributor'];
 	groupsTags = ['nijmegen','arnhem','gelderland','rivierenland'];
 	$(document).ready(function() {
@@ -88,30 +90,30 @@ function addInput(divName, type, value, add=true){
 <tr><td colspan="2" style="text-align: right;"><select name="select" onChange="window.location.href='{base|}?for='+this.value;">{selector|}</select><br/><hr/></td></tr>
 <tr><td><table>
 	<tr>
-		<td>{t.username|gebruiker}:</td><td class="nowrap"><input type="text" name="username" value="{username|}" required="true" {username.edit?edit="true":readonly="true"} autocomplete="false" />{t.domain|@mydomain.ltd}</td>
+		<td>{t.username|username}:</td><td class="nowrap"><input type="text" name="username" value="{username|}" required="true" {username.edit?edit="true":readonly="true"} autocomplete="false" />{t.domain|@mydomain.ltd}</td>
 	</tr><tr>
-		<td>{t.password|wachtwoord}:</td><td><input type="password" name="password" class="max" autocomplete="false" {username.edit?required="true":} /></td>
+		<td>{t.password|password}:</td><td><input type="password" name="password" class="max" autocomplete="false" {username.edit?required="true":} /></td>
 	</tr><tr>
-		<td>{t.password-confirm|bevestigen}:</td><td><input type="password" name="password-confirm" class="max" {username.edit?required="true":}/></td>
+		<td>{t.password-confirm|confirm}:</td><td><input type="password" name="password-confirm" class="max" {username.edit?required="true":}/></td>
 	</tr><tr>
-		<td colspan="2">{t.role|rollen}:<br/><input name="role" class="max" id="role" value="{role|}" /></td>
+		<td colspan="2">{t.role|roles}:<br/><input name="role" class="max" id="role" value="{role|}" /></td>
 	</tr><tr>
-		<td colspan="2">{t.group|groepen}:<br/><input name="group" class="max" id="group" value="{group|}" /></td>
+		<td colspan="2">{t.group|groups}:<br/><input name="group" class="max" id="group" value="{group|}" /></td>
 	</tr></table></td>
 	
 	<td><table>
 	<tr> <!-- >{t.name|naam}:</td><td -->
-		<td colspan="2" class="nowrap"><input type="text" name="name[title]" value="{name[title]|}" placeholder="{t.name-title|drs.}" /> <input type="text" name="name[initials]" value="{name[initials]|}" required="true" placeholder="{t.name-initials|X.}" /> (<input type="text" name="name[first]" value="{name[first]|}" placeholder="{t.name-first|roepnaam}" />) <input type="text" name="name[lastprefix]" value="{name[lastprefix]|}" placeholder="{t.name-lastprefix|van der}" /> <input type="text" name="name[last]" value="{name[last]|}" required="true" placeholder{t.name-last|achternaam}" /></td>
+		<td class="nowrap"><input type="text" name="name[title]" value="{name[title]|}" placeholder="{t.name-title|Msc.}" /> <input type="text" name="name[initials]" value="{name[initials]|}" required="true" placeholder="{t.name-initials|X.}" /> (<input type="text" name="name[first]" value="{name[first]|}" placeholder="{t.name-first|first name}" />)</td><td><input type="text" name="name[lastprefix]" value="{name[lastprefix]|}" placeholder="{t.name-lastprefix|van der}" /> <input type="text" name="name[last]" value="{name[last]|}" required="true" placeholder="{t.name-last|last name}" /></td>
 	</tr><tr>
-		<td nowrap="true">{t.dayofbirth+sex|geboortedatum en geslacht}:</td><td><input type="date" name="dayofbirth" value="{dayofbirth|}" id="dayofbirth" placeholder="01-01-1970" /> <select name="sex" required="true">{sex-select|}</select></td>
+		<td nowrap="true">{t.dayofbirth+sex|day of birth and sex}:</td><td><input type="date" name="dayofbirth" value="{dayofbirth|}" id="dayofbirth" placeholder="01-01-1970" /> <select name="sex" required="true">{sex-select|}</select></td>
 	</tr><tr>
-		<td>{t.bsn|burgerservicenummer}:</td><td><input type="text" name="bsn" value="{bsn|}" pattern="[0-9]{9}" maxlength="9" /></td>
+		<td>{t.bsn|ssn}:</td><td><input type="text" name="bsn" value="{bsn|}" pattern="[0-9]{9}" maxlength="9" /></td>
 	</tr><tr>
-		<td>{t.address|adres}:<input type="button" value="+" onClick="addInput('AddressDiv', 'address');" class="plus right" /><datalist id="country"><option value="NL - Nederland" /><option value="B - Belgi&euml;" /><option value="D - Duitsland" /><option value="UK - Verenigd Koninkrijk" /></datalist></td><td><span id="AddressDiv"></span></td>
+		<td>{t.address|address}:<input type="button" value="+" onClick="addInput('AddressDiv', 'address');" class="plus right" /><datalist id="country"><option value="NL - Nederland" /><option value="B - Belgi&euml;" /><option value="D - Duitsland" /><option value="UK - Verenigd Koninkrijk" /></datalist></td><td><span id="AddressDiv"></span></td>
 	</tr><tr>
-		<td>{t.phone|telefoonnummer}:<input type="button" value="+" onClick="addInput('PhoneDiv', 'phone');" class="plus right" /></td><td><span id="PhoneDiv"></span></td>
+		<td>{t.phone|phonenumber}:<input type="button" value="+" onClick="addInput('PhoneDiv', 'phone');" class="plus right" /></td><td><span id="PhoneDiv"></span></td>
 	</tr><tr>
-		<td>{t.email|emailadres}:<input type="button" value="+" onClick="addInput('EmailDiv', 'email');" class="plus right" /></td><td><span id="EmailDiv"></span></td>
+		<td>{t.email|emailaddress}:<input type="button" value="+" onClick="addInput('EmailDiv', 'email');" class="plus right" /></td><td><span id="EmailDiv"></span></td>
 	</tr><tr>
 		<td>{t.twitter|twitter}:<input type="button" value="+" onClick="addInput('TwitterDiv', 'twitter');" class="plus right" /></td><td><span id="TwitterDiv"></span></td>
 	</tr><tr>
@@ -121,15 +123,18 @@ function addInput(divName, type, value, add=true){
 	</tr></table></td>
 </tr>
 <tr>
-	<td style="text-align: right;"><input type="submit" class="bold" value="{t.submit|verwerken}" /></td>
-	<td style="text-align: right;"><input type="reset" value="{t.restore|herstellen}" /><input type="button" class="red" value="{t.remove|verwijderen}" onClick="window.location.href='{base|/ledenbestand.php}?delete='+this.form.username.value;" {username.edit?readonly="true":} /></td>
+	<td style="text-align: right;"><input type="submit" class="bold" value="{t.submit|save}" /></td>
+	<td style="text-align: right;"><input type="reset" value="{t.restore|restore}" /><input type="button" class="red" value="{t.remove|remove}" onClick="window.location.href='{base|/management.php}?delete='+this.form.username.value;" {username.edit?readonly="true":} /></td>
 </tr>
 </form></table>
 
 <script type="text/javascript">
 addInput('PhoneDiv', 'phone', '{phone[0]|}'); {phone[1]?addInput('PhoneDiv', 'phone', '{phone[1]}'); :} {phone[2]?addInput('PhoneDiv', 'phone', '{phone[2]}'); :} {phone[3]?addInput('PhoneDiv', 'phone', '{phone[3]}'); :} {phone[4]?addInput('PhoneDiv', 'phone', '{phone[4]}'); :} {phone[5]?addInput('PhoneDiv', 'phone', '{phone[5]}'); :} {phone[6]?addInput('PhoneDiv', 'phone', '{phone[6]}'); :} {phone[7]?addInput('PhoneDiv', 'phone', '{phone[7]}'); :} {phone[8]?addInput('PhoneDiv', 'phone', '{phone[8]}'); :} {phone[9]?addInput('PhoneDiv', 'phone', '{phone[9]}'); :} {phone[10]?addInput('PhoneDiv', 'phone', '{phone[10]}'); :}
+</script><script>
 addInput('EmailDiv', 'email', '{email[0]|}'); {email[1]?addInput('EmailDiv', 'email', '{email[1]}'); :} {email[2]?addInput('EmailDiv', 'email', '{email[2]}'); :} {email[3]?addInput('EmailDiv', 'email', '{email[3]}'); :} {email[4]?addInput('EmailDiv', 'email', '{email[4]}'); :} {email[5]?addInput('EmailDiv', 'email', '{email[5]}'); :} {email[6]?addInput('EmailDiv', 'email', '{email[6]}'); :} {email[7]?addInput('EmailDiv', 'email', '{email[7]}'); :} {email[8]?addInput('EmailDiv', 'email', '{email[8]}'); :} {email[9]?addInput('EmailDiv', 'email', '{email[9]}'); :} {email[10]?addInput('EmailDiv', 'email', '{email[10]}'); :}
+</script><script>
 addInput('TwitterDiv', 'twitter', '{twitter[0]|}'); {twitter[1]?addInput('TwitterDiv', 'twitter', '{twitter[1]}'); :} {twitter[2]?addInput('TwitterDiv', 'twitter', '{twitter[2]}'); :} {twitter[3]?addInput('TwitterDiv', 'twitter', '{twitter[3]}'); :} {twitter[4]?addInput('TwitterDiv', 'twitter', '{twitter[4]}'); :} {twitter[5]?addInput('TwitterDiv', 'twitter', '{twitter[5]}'); :} {twitter[6]?addInput('TwitterDiv', 'twitter', '{twitter[6]}'); :} {twitter[7]?addInput('TwitterDiv', 'twitter', '{twitter[7]}'); :} {twitter[8]?addInput('TwitterDiv', 'twitter', '{twitter[8]}'); :} {twitter[9]?addInput('TwitterDiv', 'twitter', '{twitter[9]}'); :} {twitter[10]?addInput('TwitterDiv', 'twitter', '{twitter[10]}'); :}
+</script><script>
 addInput('AddressDiv', 'address', {'street':'{address[0][street]|}', 'postcode':'{address[0][postcode]|}', 'city':'{address[0][city]|}', 'country':'{address[0][country]|}'});
 addInput('AddressDiv', 'address', {'street':'{address[1][street]|}', 'postcode':'{address[1][postcode]|}', 'city':'{address[1][city]|}', 'country':'{address[1][country]|}'}, {address[1]?true:false});
 addInput('AddressDiv', 'address', {'street':'{address[2][street]|}', 'postcode':'{address[2][postcode]|}', 'city':'{address[2][city]|}', 'country':'{address[2][country]|}'}, {address[2]?true:false});

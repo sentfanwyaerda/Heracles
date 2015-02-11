@@ -26,6 +26,7 @@ function lb_select_options($options=array(), $value=NULL){
 	return $str;
 }
 
+
 if( Heracles::is_authenticated() && Heracles::has_role('administrator') ){
 	if(is_array($_POST) && TRUE){
 		Heracles::save_record($_POST);
@@ -36,17 +37,23 @@ if( Heracles::is_authenticated() && Heracles::has_role('administrator') ){
 	if(isset($_GET['delete'])){ Heracles::remove_record($_GET['delete']); $_GET['for'] = 'new'; }
 	
 	#/*fill $_POST*/ $flags = array_merge($flags, $_POST);
-	if(isset($_GET['for']) && $_GET['for'] != 'new'){ $flags = array_merge($flags, Heracles::load_record($_GET['for'])); }
+	if(isset($_GET['for']) && $_GET['for'] != 'new'){
+		$flags = array_merge($flags, Heracles::load_record($_GET['for']));
+		//*debug*/ print_r(Heracles::load_record($_GET['for'])); 
+	}
 	
 	if(isset($_GET['for'])){
 		$flags['username'] = $_GET['for'];
 		if($_GET['for'] == 'new'){ $flags['username'] = NULL; $flags['username.edit'] = TRUE; }
 	} else { $flags['username.edit'] = TRUE; }
 	$flags = array_merge($flags, array(
-			'selector' => Morpheus::basic_parse_str(lb_select_options(array_merge(array('new'=>'{t.adduser|Add User}'), Heracles::list_users(TRUE)), $flags['username']) , $flags),
-			'sex-select' => Morpheus::basic_parse_str(lb_select_options(array('m'=>'{t.male|male}','f'=>'{t.female|female}','x'=>'{t.other|other}'), $flags['sex']) , $flags),
+			'selector' => Morpheus::basic_parse_str(lb_select_options(array_merge(array('new'=>'{t.adduser|Add User}'), Heracles::list_users(TRUE)), (isset($flags['username']) ? $flags['username'] : NULL )) , $flags),
+			'sex-select' => Morpheus::basic_parse_str(lb_select_options(array('m'=>'{t.male|male}','f'=>'{t.female|female}','x'=>'{t.other|other}'), (isset($flags['sex']) ? $flags['sex'] : NULL )) , $flags),
 		));
 	print Morpheus::basic_parse($skin.'edit-user.html', $flags);
 }
-else{ header("Location: ?authenticate"); exit; }
+else{
+	# header("Location: ./management.php"); exit;
+	print '<script>window.location.href="./management.php";</script>'; exit;
+}
 ?>
