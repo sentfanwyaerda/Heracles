@@ -62,7 +62,7 @@ class Heracles {
 								return self::authenticate_key($username, $password, $method, TRUE);
 								//return TRUE;
 							}
-							$this->warining[] = $error; //on Authentication failure, only deserves a warning: authenticate() will still return FALSE, but process won't halt
+							$this->warning[] = $error; //on Authentication failure, only deserves a warning: authenticate() will still return FALSE, but process won't halt
 	/*debug*/ if(self::_auth_debug()){ $this->_debug[] = __FUNCTION__.'.pam_auth() > '.print_r($error, TRUE); }
 						}
 						else{
