@@ -1,1 +1,1 @@
-{"methods": ["http", "pam"], "debug": 1}
+[{"username":"admin","pass-hash":"d2abaa37a7c3db1137d385e1d8c15fd2","role":["administrator","webmaster"],"group":["\/"],"address":null,"bsn":null,"dayofbirth":null,"name":{"title":null,"initials":".","first":null,"lastprefix":"","last":"Administrator"},"sex":"x","email":null,"facebook":null,"phone":null,"skype":null,"twitter":null}]
