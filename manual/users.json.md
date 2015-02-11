@@ -1,6 +1,6 @@
-The default *[user.json](../user.json)* file contains one user, with priviledge "administrator".
+The default *[users.json](../users.json)* file contains one user, with priviledge "administrator".
 
 ```
-user: admin
-pswd: admin
+username: admin
+password: admin
 ```
