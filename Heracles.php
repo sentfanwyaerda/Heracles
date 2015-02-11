@@ -87,7 +87,7 @@ class Heracles {
 		return FALSE;
 	}
 	function anonymous(){
-		session_start();
+		@session_start();
 		$_SESSION['hash'] = NULL;
 	}
 	function authenticate($username, $password=FALSE){
