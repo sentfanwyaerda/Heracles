@@ -14,20 +14,8 @@ $heraclesdb = (HADES_ROOT == dirname(__FILE__) ? dirname(HADES_ROOT).'/users.jso
 
 $flags['t.domain'] = '@'.(defined('HADES_DOMAIN') ? HADES_DOMAIN : 'domain.ltd');
 
-function lb_select_options($options=array(), $value=NULL){
-	$str = NULL;
-	$m = 0;
-	foreach($options as $n=>$o){
-		$str .= '<option';
-		if(!(is_int($n) && $n==$m++)){ $str .= ' value="'.$n.'"'; }
-		if($value == $o || (!is_int($n) && $value == $n)){ $str .= ' selected="true"'; }
-		$str .= '>'.$o.'</option>';
-	}
-	return $str;
-}
-
-
 if( Heracles::is_authenticated() && Heracles::has_role('administrator') ){
+	/*debug*/ print '<!-- is_authenticated & has_role(administrator) -->'."\n";
 	if(is_array($_POST) && TRUE){
 		Heracles::save_record($_POST);
 	}
@@ -47,13 +35,13 @@ if( Heracles::is_authenticated() && Heracles::has_role('administrator') ){
 		if($_GET['for'] == 'new'){ $flags['username'] = NULL; $flags['username.edit'] = TRUE; }
 	} else { $flags['username.edit'] = TRUE; }
 	$flags = array_merge($flags, array(
-			'selector' => Morpheus::basic_parse_str(lb_select_options(array_merge(array('new'=>'{t.adduser|Add User}'), Heracles::list_users(TRUE)), (isset($flags['username']) ? $flags['username'] : NULL )) , $flags),
-			'sex-select' => Morpheus::basic_parse_str(lb_select_options(array('m'=>'{t.male|male}','f'=>'{t.female|female}','x'=>'{t.other|other}'), (isset($flags['sex']) ? $flags['sex'] : NULL )) , $flags),
+			'selector' => Morpheus::basic_parse_str(Heracles::_lb_select_options(array_merge(array('new'=>'{t.adduser|Add User}'), Heracles::list_users(TRUE)), (isset($flags['username']) ? $flags['username'] : NULL )) , $flags),
+			'sex-select' => Morpheus::basic_parse_str(Heracles::_lb_select_options(array('m'=>'{t.male|male}','f'=>'{t.female|female}','x'=>'{t.other|other}'), (isset($flags['sex']) ? $flags['sex'] : NULL )) , $flags),
 		));
 	print Morpheus::basic_parse($skin.'edit-user.html', $flags);
 }
 else{
 	# header("Location: ./management.php"); exit;
-	print '<script>window.location.href="./management.php";</script>'; exit;
+	print '<script>window.location.href="./authenticate.php";</script>'; exit;
 }
 ?>

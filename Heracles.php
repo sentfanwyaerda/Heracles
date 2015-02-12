@@ -38,7 +38,7 @@ class Heracles {
 		if($assigned != FALSE){ ksort($list); }
 		return $list;
 	}
-	function build_fullname($record=NULL){
+	function build_fullname($record=NULL, $pattern=FALSE){
 		if($record == NULL){
 			$record = Heracles::load_record(Heracles::get_user_id());
 		}
@@ -63,13 +63,15 @@ class Heracles {
 		
 		$record = Heracles::_srfix($record);
 		
-		/*test record if valid commit*/ if(!isset($record['select'])){ return FALSE; }
+		//*test record if valid commit*/ if(!isset($record['select'])){ return FALSE; }
 		
 		if($mode == 'new'){
 			$db[] = $record;
 		} else {
+			//*debug*/ print '<!-- '.print_r($record, TRUE).' x '.print_r($db, TRUE).' -->';
 			foreach($db as $i=>$r){
 				if(Heracles::array_match(array('username' => $record['username']), $r)){
+					//*notify*/ print '<!-- [Heracles] save_record matched by '.$record['username'].' and saved -->';
 					$db[$i] = $record;
 				}
 			}
@@ -148,8 +150,58 @@ class Heracles {
 	}
 	function first_order(){
 		$db = Heracles::open_db();
-	return array_keys($db[0]);
+		return array_keys($db[0]);
 	}
+	/********************************************************
+	 * HTML generating Methods (examples in /admin/)
+	 ********************************************************/
+	function html_management($flags=array()){
+		$skin = dirname(__FILE__).'/admin/';
+		if(!is_array($flags)){ $flags = array(); }
+		if(!isset($flags['t.domain'])){ $flags['t.domain'] = '@'.(defined('HADES_DOMAIN') ? HADES_DOMAIN : 'domain.ltd'); }
+
+		if( Heracles::is_authenticated() && Heracles::has_role('administrator') ){
+			if(is_array($_POST) && isset($_POST['select']) && TRUE){
+				Heracles::save_record($_POST);
+				//*notify*/ print '<!-- [Heracles] save record of '.print_r($_POST, TRUE).' -->';
+			}
+			/*fix*/ if(!isset($flags) || !is_array($flags)){ $flags = array(); }
+			
+			if(isset($_GET['delete'])){
+				Heracles::remove_record($_GET['delete']); $_GET['for'] = 'new';
+				//*notify*/ print '<!-- [Heracles] delete '.$_GET['delete'].' -->';
+			}
+			
+			#/*fill $_POST*/ $flags = array_merge($flags, $_POST);
+			if(isset($_GET['for']) && $_GET['for'] != 'new'){
+				$flags = array_merge($flags, Heracles::load_record($_GET['for']));
+				//*notify*/ print '<!-- [Heracles] load records of '.$_GET['for'].' -->';
+			}
+			
+			if(isset($_GET['for'])){
+				$flags['username'] = $_GET['for'];
+				if($_GET['for'] == 'new'){ $flags['username'] = NULL; $flags['username.edit'] = TRUE; }
+			} else { $flags['username.edit'] = TRUE; }
+			$flags = array_merge($flags, array(
+					'selector' => Morpheus::basic_parse_str(Heracles::_lb_select_options(array_merge(array('new'=>'{t.adduser|Add User}'), Heracles::list_users(TRUE)), (isset($flags['username']) ? $flags['username'] : NULL )) , $flags),
+					'sex-select' => Morpheus::basic_parse_str(Heracles::_lb_select_options(array('m'=>'{t.male|male}','f'=>'{t.female|female}','x'=>'{t.other|other}'), (isset($flags['sex']) ? $flags['sex'] : NULL )) , $flags),
+				));
+			return Morpheus::basic_parse($skin.'edit-user.html', $flags);
+		}
+		else{
+			# header("Location: ./management.php"); exit;
+			# print '<script>window.location.href="./authenticate.php";</script>'; exit;
+			return Heracles::html_authenticate(); //exit;
+		}
+	}
+	function html_authenticate($flags=array()){
+		$skin = dirname(__FILE__).'/admin/';
+		if(!is_array($flags)){ $flags = array(); }
+		return Morpheus::basic_parse($skin.'authenticate.html', $flags);
+	}
+	/********************************************************
+	 * Assisting Methods
+	 ********************************************************/
 	function _lrfix($r){
 		$r['role'] = implode(",", $r['role']);
 		$r['group'] = implode(",", $r['group']);
@@ -158,6 +210,7 @@ class Heracles {
 		$r = Heracles::_lrfix_array($r, 'twitter');
 		$r = Heracles::_lrfix_array($r, 'address');
 		$r = Heracles::_lrfix_array($r, 'name');
+		if(!isset($r['name[full]'])){ $r['name[full]'] = Heracles::build_fullname($r); }
 		return $r;
 	}
 	function _lrfix_array($r, $item){
@@ -180,6 +233,17 @@ class Heracles {
 		$r = Heracles::array_order($r, Heracles::first_order());
 		return $r;
 	}
+	function _lb_select_options($options=array(), $value=NULL){
+		$str = NULL;
+		$m = 0;
+		foreach($options as $n=>$o){
+			$str .= '<option';
+			if(!(is_int($n) && $n==$m++)){ $str .= ' value="'.$n.'"'; }
+			if($value == $o || (!is_int($n) && $value == $n)){ $str .= ' selected="true"'; }
+			$str .= '>'.$o.'</option>';
+		}
+		return $str;
+	}
 	function array_match($needle=array(), $haystack=array(), $with_key=TRUE, $operator="AND"){
 		$bool = TRUE;
 		if(!is_array($needle)){ $needle = explode(',', $needle); /*return FALSE;*/ }
@@ -187,6 +251,7 @@ class Heracles {
 		if($with_key == TRUE){
 			foreach($needle as $n=>$v){
 				if($needle[$n] == $haystack[$n]){
+					/*notify*/ print '<!-- [Heracles] array_match by key of '.$needle[$n].' -->';
 					if($operator !== "AND"){ return TRUE; }
 					$bool = ($bool ? TRUE : FALSE);
 				}
@@ -195,6 +260,7 @@ class Heracles {
 		} else {
 			foreach($needle as $v){
 				if(in_array($v, $haystack)){
+					//*notify*/ print '<!-- [Heracles] array_match of '.$v.' -->';
 					if($operator !== "AND"){ return TRUE; }
 					$bool = ($bool ? TRUE : FALSE);
 				}

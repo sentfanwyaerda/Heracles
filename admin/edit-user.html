@@ -9,7 +9,7 @@ table.user input[readonly] { color: #999999; }
 table.user td.divider { width: 40px; }
 table.user input[name="name[title]"] { width: 32px; }
 table.user input[name="name[initials]"], table.user input[name="name[lastprefix]"] { width: 50px; }
-table.user input[name="username"], table.user input[name="dayofbirth"], table.user input[name="bsn"], table.user input[name="name[first]"] { width: 75px; }
+table.user input[name="username"], table.user input[name="dayofbirth"], table.user input[name="member-since"], table.user input[name="bsn"], table.user input[name="name[first]"] { width: 75px; }
 table.user input[name$="postcode]"] { width: 55px; }
 table.user input[name="name[last]"], table.user input[name$="city]"] { width: 145px; }
 table.user input[name^="twitter"], table.user .half { width: 100px; }
@@ -43,6 +43,11 @@ table.user input.bold, table.user input[readonly] { font-weight: bold; }
     $.datepicker.setDefaults($.datepicker.regional['nl']);
     $(function () {
         $("#dayofbirth").datepicker({
+            numberOfMonths: 1,
+            showButtonPanel: true,
+            dateFormat: 'dd-mm-yy'
+        });
+		$("#member-since").datepicker({
             numberOfMonths: 1,
             showButtonPanel: true,
             dateFormat: 'dd-mm-yy'
@@ -99,6 +104,10 @@ function addInput(divName, type, value, add=true){
 		<td colspan="2">{t.role|roles}:<br/><input name="role" class="max" id="role" value="{role|}" /></td>
 	</tr><tr>
 		<td colspan="2">{t.group|groups}:<br/><input name="group" class="max" id="group" value="{group|}" /></td>
+	</tr><tr>
+		<td>{t.jobtitle|jobtitle}:</td><td><input type="text" name="jobtitle" value="{jobtitle|}" class="max" /></td>
+	</tr><tr>
+		<td>{t.member-since|member since}:</td><td><input type="text" name="member-since" id="member-since" value="{member-since|}" class="max" /></td>
 	</tr></table></td>
 	
 	<td><table>
