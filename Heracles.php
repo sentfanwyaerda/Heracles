@@ -133,7 +133,8 @@ class Heracles {
 		}
 	}
 	function get_user_id(){
-		return $_SESSION['user'];
+		if(Heracles::is_authenticated()){ return $_SESSION['user']; }
+		else { return FALSE; }
 	}
 	function has_role($role=array(), $operator="AND", $user=FALSE){
 		if($user == FALSE){ $user = $_SESSION['user']; }
