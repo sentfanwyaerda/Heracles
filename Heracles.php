@@ -53,6 +53,10 @@ class Heracles {
 		}
 		return array();
 	}
+	function load_record_flags($key=NULL){
+		$record = Heracles::load_record($key);
+		return Heracles::_lrfix($record);
+	}
 	function save_record($record=array(), $mode=NULL){
 		if($mode == NULL && isset($record['select'])){ $mode = $record['select']; }
 		$db = Heracles::open_db(Heracles::get_dbfile());
