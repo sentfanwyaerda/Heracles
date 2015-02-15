@@ -1,6 +1,8 @@
 <?php 
-#if(!defined('HERACLES_DB_FILE')){ define('HERACLES_DB_FILE', dirname(__FILE__).'/users.json'); }
+if(!defined('HERACLES_DB_FILE')){ define('HERACLES_DB_FILE', dirname(__FILE__).'/users.json'); }
 if(!defined('HERACLES_SESSION_LENGTH')){ define('HERACLES_SESSION_LENGTH', (12*60*60)); }
+
+if(file_exists(dirname(dirname(__FILE__)).'/Morpheus/Morpheus.php')){ require_once(dirname(dirname(__FILE__)).'/Morpheus/Morpheus.php'); }
 
 class Heracles {
 	var $db_file;
@@ -95,6 +97,9 @@ class Heracles {
 	function anonymous(){
 		@session_start();
 		$_SESSION['hash'] = NULL;
+	}
+	function try_to_authenticate(){
+		if(isset($_POST) && is_array($_POST) && isset($_POST['username']) && isset($_POST['password'])){ Heracles::authenticate($_POST['username'], $_POST['password']); }
 	}
 	function authenticate($username, $password=FALSE){
 		$record = Heracles::load_record($username);
