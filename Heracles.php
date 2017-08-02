@@ -148,6 +148,16 @@ class Heracles {
 		$record = \Heracles::load_record($user);
 		return \Heracles::array_match($role, $record['role'], FALSE, $operator);
 	}
+	function has_access_to_application($app=NULL, $user=FALSE){
+		if($user == FALSE){ $user = $_SESSION['user']; }
+		$record = \Heracles::load_record($user);
+		return ( (defined('HERACLES_AUTO_WHITELIST') && constant('HERACLES_AUTO_WHITELIST') == TRUE ? !isset($record['application_whitelist']) : FALSE ) || \Heracles::array_match($app, $record['application_whitelist'], FALSE, "AND") );
+	}
+	function has_access_to_widget($app=NULL, $user=FALSE){
+		if($user == FALSE){ $user = $_SESSION['user']; }
+		$record = \Heracles::load_record($user);
+		return ( (defined('HERACLES_AUTO_WHITELIST') && constant('HERACLES_AUTO_WHITELIST') == TRUE ? !isset($record['widget_whitelist']) : FALSE ) || \Heracles::array_match($app, $record['widget_whitelist'], FALSE, "AND") );
+	}
 	function in_group($group=array(), $operator="AND", $user=FALSE){
 		if($user == FALSE){ $user = $_SESSION['user']; }
 		$record = \Heracles::load_record($user);
@@ -249,14 +259,14 @@ class Heracles {
 		}
 		return $str;
 	}
-	function array_match($needle=array(), $haystack=array(), $with_key=TRUE, $operator="AND"){
+	function array_match($needle=array(), $haystack=array(), $with_key=TRUE, $operator="AND", $explosive=','){
 		$bool = TRUE;
-		if(!is_array($needle)){ $needle = explode(',', $needle); /*return FALSE;*/ }
-		if(!is_array($haystack)){ $haystack = explode(',', $haystack); }
+		if(!is_array($needle)){ $needle = explode($explosive, $needle); /*return FALSE;*/ }
+		if(!is_array($haystack)){ $haystack = explode($explosive, $haystack); }
 		if($with_key == TRUE){
 			foreach($needle as $n=>$v){
 				if($needle[$n] == $haystack[$n]){
-					/*notify*/ print '<!-- [Heracles] array_match by key of '.$needle[$n].' -->';
+					//*notify*/ print '<!-- [Heracles] array_match by key of '.$needle[$n].' -->';
 					if($operator !== "AND"){ return TRUE; }
 					$bool = ($bool ? TRUE : FALSE);
 				}
