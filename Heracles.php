@@ -198,10 +198,10 @@ class Heracles {
 				if($_GET['for'] == 'new'){ $flags['username'] = NULL; $flags['username.edit'] = TRUE; }
 			} else { $flags['username.edit'] = TRUE; }
 			$flags = array_merge($flags, array(
-					'selector' => Morpheus::basic_parse_str(\Heracles::_lb_select_options(array_merge(array('new'=>'{t.adduser|Add User}'), \Heracles::list_users(TRUE)), (isset($flags['username']) ? $flags['username'] : NULL )) , $flags),
-					'sex-select' => Morpheus::basic_parse_str(\Heracles::_lb_select_options(array('m'=>'{t.male|male}','f'=>'{t.female|female}','x'=>'{t.other|other}'), (isset($flags['sex']) ? $flags['sex'] : NULL )) , $flags),
+					'selector' => \Morpheus::basic_parse_str(\Heracles::_lb_select_options(array_merge(array('new'=>'{t.adduser|Add User}'), \Heracles::list_users(TRUE)), (isset($flags['username']) ? $flags['username'] : NULL )) , $flags),
+					'sex-select' => \Morpheus::basic_parse_str(\Heracles::_lb_select_options(array('m'=>'{t.male|male}','f'=>'{t.female|female}','x'=>'{t.other|other}'), (isset($flags['sex']) ? $flags['sex'] : NULL )) , $flags),
 				));
-			return Morpheus::basic_parse($skin.'edit-user.html', $flags);
+			return \Morpheus::basic_parse($skin.'edit-user.html', $flags);
 		}
 		else{
 			# header("Location: ./management.php"); exit;
@@ -212,7 +212,7 @@ class Heracles {
 	function html_authenticate($flags=array()){
 		$skin = dirname(__FILE__).'/admin/';
 		if(!is_array($flags)){ $flags = array(); }
-		return Morpheus::basic_parse($skin.'authenticate.html', $flags);
+		return \Morpheus::basic_parse($skin.'authenticate.html', $flags);
 	}
 	/********************************************************
 	 * Assisting Methods
