@@ -95,7 +95,7 @@ class Heracles {
 		return FALSE;
 	}
 	function anonymous(){
-		@session_start();
+		if ( !isset($_SESSION) ) session_start();
 		$_SESSION['hash'] = NULL;
 	}
 	function try_to_authenticate(){
@@ -104,7 +104,7 @@ class Heracles {
 	function authenticate($username, $password=FALSE){
 		$record = \Heracles::load_record($username);
 		if($record['pass-hash'] == md5($username.':'.$password) ){
-			session_start();
+			if ( !isset($_SESSION) ) session_start();
 			$start = round(microtime(TRUE),1);
 			$_SESSION['start'] = $start;
 			$_SESSION['user'] = $username;
@@ -117,7 +117,7 @@ class Heracles {
 		$record = \Heracles::load_record($username);
 		$start = ($created != FALSE ? round($created,1) : ($expires != 0 ? round($expires - \Heracles::get_session_length() , 1) : round(microtime(TRUE),1) ) );
 		if($key == md5($username.':'.$start.':'.$record['pass-hash']) ){
-			@session_start();
+			if ( !isset($_SESSION) ) session_start();
 			$_SESSION['start'] = $start;
 			$_SESSION['user'] = $username;
 			$_SESSION['hash'] = $key;
@@ -126,7 +126,7 @@ class Heracles {
 		return FALSE;		
 	}
 	function is_authenticated(){
-		@session_start();
+		if ( !isset($_SESSION) ) session_start();
 		if( !isset($_SESSION['user']) || !isset($_SESSION['hash']) ){ return FALSE; }
 		return ($_SESSION['hash'] == md5($_SESSION['user'].':'.$_SESSION['start'].':'.\Heracles::get_passhash($_SESSION['user'])) && TRUE /*$_SESSION['start'] <~ 1 hour (\Heracles::get_session_length()) */ );
 	}
