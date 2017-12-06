@@ -18,6 +18,7 @@ class Heracles_Application extends \Hades\Application {
 			'filepath'=>$this->path,
 			'pagetitle'=>'Authenticate'
 		);
+		$flags['fullpath'] = $this->path.(isset($flags['action']) ? '?action='.$flags['action'] : NULL);
 		$body = new \Morpheus('sign-in.html', $flags, array('theme/current', 'theme/default'));
 		return $body;
 		//return '{{sign-out-form|}}';
@@ -56,24 +57,24 @@ class Heracles_Application extends \Hades\Application {
 		if(in_array($post['action'], array('sign-in','sign_in','login','authenticate','sign-out','sign_out','logoff')) ){ return TRUE; }
 		return FALSE;
 	}
-	function form_processing($path=NULL, $action=NULL, $get=FALSE, $post=FALSE, $altaction=NULL){
+	function form_processing($path=NULL, $action=NULL, $get=FALSE, $post=FALSE){
 		if($path === NULL){ $path = self::_get('path', TRUE); }
 		if($action === NULL){ $action = self::_get('action', NULL, 'view'); }// else { self::_set('action', $action); }
 		if($get === FALSE){ $get = $_GET; }
 		if($post === FALSE){ $post = $_POST; }
-		if($altaction === NULL){ $altaction = ($post['action'] ? $post['action'] : $action); }
-		$bool = TRUE;
-		switch(strtolower($altaction)){
+		$bool = FALSE;
+		switch(strtolower($action)){
 			case 'sign-in': case 'sign_in': case 'login': case 'authenticate':
 				if(class_exists('\Heracles')){ \Heracles::try_to_authenticate(); }
 				\Hades::Message('you have signed in');
+				$bool = TRUE;
 				break;
 			case 'sign-out': case 'sign_out': case 'logoff':
 				if(class_exists('\Heracles')){ \Heracles::anonymous(); }
 				$bool = TRUE;
 				break;
-			default:
-				/*IGNORE ANY FORM*/ $bool = FALSE;
+			#default: $bool = FALSE;
+				/*IGNORE ANY FORM*/
 		}
 		return $bool;
 	}
