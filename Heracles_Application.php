@@ -41,7 +41,7 @@ class Heracles_Application extends \Hades\Application {
 	/***************************************
 	 * Path processing functions
 	 ***************************************/
-	function claim_path($path=NULL){
+	function claim_path($path=NULL, $prefix=NULL, $action=NULL){
 		if($path === NULL){ $path = self::_get('path', TRUE); }
 		return in_array(strtolower($path), array('sign_in','sign_out','register'));
 	}
@@ -66,8 +66,8 @@ class Heracles_Application extends \Hades\Application {
 		switch(strtolower($action)){
 			case 'sign-in': case 'sign_in': case 'login': case 'authenticate':
 				if(class_exists('\Heracles')){ \Heracles::try_to_authenticate(); }
-				\Hades::Message('you have signed in');
-				$bool = TRUE;
+				if(class_exists('\Hades')){ \Hades::Message((self::is_authenticated() ? 'you have signed in succesfully' : 'your authentication failed')); }
+				$bool = self::is_authenticated();
 				break;
 			case 'sign-out': case 'sign_out': case 'logoff':
 				if(class_exists('\Heracles')){ \Heracles::anonymous(); }
