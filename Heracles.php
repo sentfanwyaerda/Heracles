@@ -16,6 +16,7 @@ class Heracles {
 		if(defined('HERACLES_DB_FILE')){ $heraclesdb = HERACLES_DB_FILE; }
 		elseif(isset($this)){ $heraclesdb = $this->db_file; }
 		else{ global $heraclesdb; }
+		/*notification*/ if(class_exists('Hades')){ \Hades::notify(__METHOD__, $heraclesdb); }
 		return $heraclesdb;
 	}
 	static function get_session_length(){
@@ -127,8 +128,13 @@ class Heracles {
 	}
 	static function is_authenticated(){
 		if ( !isset($_SESSION) ){ session_start(); }
-		if( !isset($_SESSION['Heracles:user']) || !isset($_SESSION['Heracles:hash']) ){ return FALSE; }
-		return ($_SESSION['Heracles:hash'] == md5($_SESSION['Heracles:user'].':'.$_SESSION['Heracles:start'].':'.\Heracles::get_passhash($_SESSION['Heracles:user'])) && TRUE /*$_SESSION['Heracles:start'] <~ 1 hour (\Heracles::get_session_length()) */ );
+		if( !isset($_SESSION['Heracles:user']) || !isset($_SESSION['Heracles:hash']) || !isset($_SESSION['Heracles:start']) ){
+			/*notification*/ if(class_exists('Hades')){ \Hades::notify(__METHOD__, 'SESSION might not be correctly set!'); }
+			return FALSE;
+		}
+		$res = ($_SESSION['Heracles:hash'] == md5($_SESSION['Heracles:user'].':'.$_SESSION['Heracles:start'].':'.\Heracles::get_passhash($_SESSION['Heracles:user'])) && TRUE /*$_SESSION['Heracles:start'] <~ 1 hour (\Heracles::get_session_length()) */ );
+		/*notification*/ if(class_exists('Hades')){ \Hades::notify(__METHOD__, array('result'=>$res)); }
+		return $res;
 	}
 	static function get_passhash($key=NULL, $password=FALSE, $confirm=FALSE){
 		if($password !== FALSE && ($password == $confirm) ){
